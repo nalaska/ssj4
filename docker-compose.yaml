@@ -1,0 +1,24 @@
+volumes:
+  mariadb_data:
+
+services:
+  db:
+    image: mariadb:11.3.2
+    environment:
+      MYSQL_ROOT_PASSWORD: AtxxCT3koox915FS
+      MYSQL_DATABASE: ssj
+      MYSQL_USER: ssj
+      MYSQL_PASSWORD: passworddd
+    ports:
+      - 3306:3306
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    environment:
+      PMA_USER: ssj
+      PMA_PASSWORD: passworddd
+    ports:
+      - "3005:80"
