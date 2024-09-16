@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('belt');
+            $table->string('belt'); 
             $table->string('phone'); 
             $table->string('picture')->nullable(); 
             $table->year('year_of_registration'); 
-            $table->string('status')->default('active'); // Statut de l'utilisateur, par défaut "active"
-            $table->text('notes')->nullable(); // Notes associées à l'utilisateur
+            $table->string('status')->default('active');
+            $table->text('notes')->nullable();
+            $table->date('date_of_birth')->nullable();
         });
     }
 
@@ -31,6 +32,7 @@ return new class extends Migration
             $table->dropColumn('phone');
             $table->dropColumn('picture');
             $table->dropColumn('year_of_registration');
+            $table->dropColumn('date_of_birth');
             $table->dropColumn('status');
             $table->dropColumn('notes');
         });
