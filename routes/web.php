@@ -40,5 +40,7 @@ Route::post('/users', [UserController::class, 'store'])->name('users.store');
 Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
 Route::put('/users/{users}', [UserController::class, 'update'])->name('users.update');
+Route::get('/users/{user}/attendance', [UserController::class, 'attendance'])->name('users.attendance');
+Route::post('/users/{user}/attendance', [UserController::class, 'updateAttendance'])->name('users.updateAttendance');
 
 require __DIR__.'/auth.php';

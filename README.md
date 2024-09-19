@@ -38,7 +38,7 @@ Utilisez Artisan pour lancer le serveur de développement :
 ### 5. Utiliser Docker Compose
 
 Si vous préférez utiliser Docker, vous pouvez lancer les services avec Docker Compose :
-`docker-compose up -d`
+`docker compose up -d`
 
 
 ### 6. Lancer le serveur de développement front-end

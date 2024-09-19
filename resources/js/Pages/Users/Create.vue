@@ -2,7 +2,10 @@
     <div class="flex justify-center items-center min-h-screen bg-gray-100">
       <div class="w-full max-w-md p-4">
         <h1 class="text-2xl font-bold mb-4 text-center">Créer un nouvel adhérent</h1>
-        <form @submit.prevent="submit" class="bg-white shadow-md rounded-lg p-6">
+        <form 
+          @submit.prevent="submit" 
+          class="bg-white shadow-md rounded-lg p-6"
+        >
           <div class="mb-4">
             <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Nom</label>
             <input
@@ -80,6 +83,7 @@
             <label for="picture" class="block text-gray-700 text-sm font-bold mb-2">Photo</label>
             <input
               type="file"
+              accept="image/*"
               @change="handleFileChange"
               id="picture"
               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -110,16 +114,16 @@
   </template>
 
 <script setup>
-import { useForm } from '@inertiajs/vue3';
-import InputError from '@/Components/InputError.vue';
-import { defineProps } from 'vue';
-import { formatBelt } from '@/utils';
+  import { useForm } from '@inertiajs/vue3';
+  import InputError from '@/Components/InputError.vue';
+  import { defineProps } from 'vue';
+  import { formatBelt, belts, roles } from '@/utils/utils';
 
-defineProps({
-    roles: Array
-});
+  defineProps({
+      roles: Array
+  });
 
-const form = useForm({
+  const form = useForm({
     name: '',
     email: '',
     belt: '',
@@ -129,32 +133,14 @@ const form = useForm({
     picture: '',
     status: '',
     roles: []
-});
+  });
 
-const belts = [
-    'blanche',
-    'grise',
-    'jaune',
-    'orange',
-    'verte',
-    'bleu',
-    'violette',
-    'marron',
-    'noire'
-];
+  function submit() {
+      form.post('/users');
+  }
 
-const roles = {
-    Administrateur: 'Administrateur',
-    Professeur: 'Professeur',
-    eleve: 'Élève',
-};
-
-function submit() {
-    form.post('/users');
-}
-
-function handleFileChange(event) {
-    form.picture = event.target.files[0];
-}
+  function handleFileChange(event) {
+      form.picture = event.target.files[0];
+  }
 
 </script>

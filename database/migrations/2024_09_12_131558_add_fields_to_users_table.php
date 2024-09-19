@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('status')->default('active');
             $table->text('notes')->nullable();
             $table->date('date_of_birth')->nullable();
+            $table->json('attendance')->nullable();
         });
     }
 
@@ -35,6 +36,7 @@ return new class extends Migration
             $table->dropColumn('date_of_birth');
             $table->dropColumn('status');
             $table->dropColumn('notes');
+            $table->dropColumn('attendance');
         });
     }
 };

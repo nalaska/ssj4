@@ -34,19 +34,19 @@
                 <div class="mb-4">
                     <label for="roles" class="block text-gray-700 text-sm font-bold mb-2">Rôle(s)</label>
                     <select
-                        v-model="props.roles"
+                        v-model="form.roles"
                         id="roles"
                         multiple
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     >
-                    <option
-                        v-for="(translation, roleKey) in roles"
-                        :key="roleKey"
-                        :value="roleKey"
-                    >
-                        {{ translation }}
-                    </option>
-                </select>
+                        <option
+                            v-for="(translation, roleKey) in roles"
+                            :key="roleKey"
+                            :value="roleKey"
+                        >
+                            {{ translation }}
+                        </option>
+                    </select>
                     <InputError :message="form.errors.roles" class="mt-2" />
                 </div>
                 <div class="mb-4">
@@ -103,8 +103,12 @@
                         @change="handleFileChange"
                         id="picture" 
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    >
+                    />
                     <InputError :message="form.errors.picture" class="mt-2" />
+                    
+                    <div v-if="form.picture">
+                        <img :src="`/storage/${form.picture}`" alt="Current Picture" class="mt-2 w-32 h-32 object-cover" />
+                    </div>
                 </div>
                 <div class="mb-4">
                     <label for="date_of_birth" class="block text-gray-700 text-sm font-bold mb-2">Date de naissance</label>
@@ -122,56 +126,47 @@
             </form>
         </div>
     </div>
+    
 </template>
 
 <script setup>
-import { useForm } from '@inertiajs/vue3';
-import InputError from '@/Components/InputError.vue';
-import { defineProps } from 'vue';
-import { formatBelt } from '@/utils';
+    import { useForm } from '@inertiajs/vue3';
+    import InputError from '@/Components/InputError.vue';
+    import { defineProps } from 'vue';
+    import { formatBelt, belts, roles } from '@/utils/utils';
+    import { watch } from 'vue';
 
-const props = defineProps({
-    user: Object,
-    roles: Array
-});
+    const props = defineProps({
+        user: Object,
+        roles: Array
+    });
 
+    const form = useForm({
+        id: props.user?.id || '',
+        name: props.user?.name || '',
+        email: props.user?.email || '',
+        belt: props.user?.belt || '',
+        phone: props.user?.phone || '',
+        year_of_registration: props.user?.year_of_registration || '',
+        date_of_birth: props.user?.date_of_birth || '',
+        picture: props.user?.picture || '',
+        status: props.user?.status || '',
+        roles: props.roles || [],
+        attendance: props.user?.attendance || {}
+    });
 
-const form = useForm({
-    name: props.user?.name || '',
-    email: props.user?.email || '',
-    belt: props.user?.belt || '',
-    phone: props.user?.phone || '',
-    year_of_registration: props.user?.year_of_registration || '',
-    date_of_birth: props.user?.date_of_birth || '',
-    picture: props.user?.picture || '',
-    status: props.user?.status || '',
-    roles: props?.roles?.map(role => role.name) || []
-});
+    watch(() => form.roles, (newRoles) => {
+        form.roles = newRoles;
+    });
 
-const belts = [
-    'blanche',
-    'grise',
-    'jaune',
-    'orange',
-    'verte',
-    'bleu',
-    'violette',
-    'marron',
-    'noire'
-];
+    function submit() {
+        console.log("submit")
+        form.put(`/users/${props.user.id}`);
+    }
 
-const roles = {
-    administrateur: 'Administrateur',
-    professeur: 'Professeur',
-    eleve: 'Élève',
-};
-
-function submit() {
-    form.put(`/users/${props.user.id}`);
-}
-
-function handleFileChange(event) {
-    form.picture = event.target.files[0];
-}
-
+    function handleFileChange(event) {
+        console.log(form);
+        form.picture = event.target.files[0];
+        console.log(form);
+    }
 </script>

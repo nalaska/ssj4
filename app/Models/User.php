@@ -28,14 +28,14 @@ class User extends Authenticatable
         'picture',
         'status',
         'notes',
+        'attendance'
     ];
 
-    //TODO: ajouer âge
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * @var array<int>
      */
     protected $hidden = [
         'remember_token',
@@ -44,7 +44,7 @@ class User extends Authenticatable
     /**
      * Get the attributes that should be cast.
      *
-     * @return array<string, string>
+     * @return array<string>
      */
     protected function casts(): array
     {
