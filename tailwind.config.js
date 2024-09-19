@@ -15,6 +15,11 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                brown: {
+                  400: '#63452B', // Vous pouvez ajuster cette valeur pour obtenir la teinte de marron souhaitée
+                },
+              },
         },
     },
 
