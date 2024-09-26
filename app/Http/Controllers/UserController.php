@@ -105,27 +105,5 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', "Feuille de présence modifiée pour $userName");
     }
-
-    public function generateToken(Request $request)
-    {
-        $user = $request->user();
-        $roles = $user->roles()->pluck('name')->toArray();
-        $token = $user->createToken('auth_token', $roles)->plainTextToken;
-
-        return response()->json(['token' => $token], 201);
-    }
-
-    public function revokeToken(Request $request, $tokenId)
-    {
-        $user = $request->user();
-        $user->tokens()->where('id', $tokenId)->delete();
-        return response()->json(['message' => 'Jeton révoqué'], 200);
-    }
-
-    public function listTokens(Request $request)
-    {
-        $user = $request->user();
-        $tokens = $user->tokens()->get();
-        return response()->json(['tokens' => $tokens], 200);
-    }
+    
 }
