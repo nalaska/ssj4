@@ -1,5 +1,6 @@
 volumes:
   mariadb_data:
+  redis_data:
 
 services:
   db:
@@ -22,3 +23,10 @@ services:
       PMA_PASSWORD: passworddd
     ports:
       - "3005:80"
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
