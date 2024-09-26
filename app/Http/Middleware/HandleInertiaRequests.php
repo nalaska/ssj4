@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -30,10 +31,14 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+        $roles = $user ? Cache::get('user_roles_' . $user->id, []) : [];
+
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+                'roles' => $roles
             ],
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),

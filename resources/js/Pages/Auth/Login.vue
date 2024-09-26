@@ -1,94 +1,62 @@
+<template>
+    <div class="flex justify-center items-center min-h-screen bg-gray-100">
+        <flashMessage 
+            v-if="flashMessageError || flashMessageSuccess" 
+            :flashMessage="flashMessageError || flashMessageSuccess" 
+            :color="flashMessageError ? 'red' : 'green'" 
+        />
+        <div class="w-full max-w-md p-4">
+            <div class="bg-white shadow-md rounded-lg p-6">
+                <button 
+                    @click="redirectToGoogle"
+                    class="google-login-button"
+                >
+                    <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" class="google-logo">
+                    Se connecter avec Google
+                </button>
+            </div>
+        </div>
+    </div>
+</template>
+
 <script setup>
-import Checkbox from '@/Components/Checkbox.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+    import { computed } from 'vue';
+    import { usePage } from '@inertiajs/vue3';
+    import flashMessage from '@/Components/FlashMessage.vue';
 
-defineProps({
-    canResetPassword: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-});
+    const flashMessageError = computed(() => usePage().props.flash.error);
+    const flashMessageSuccess = computed(() => usePage().props.flash.success);
 
-const form = useForm({
-    email: '',
-    password: '',
-    remember: false,
-});
-
-const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => form.reset('password'),
-    });
-};
+    const redirectToGoogle = () => {
+        window.location.href = '/auth/google';
+    }
+   
 </script>
 
-<template>
-    <GuestLayout>
-        <Head title="Log in" />
+<style>
+    .google-login-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        background-color: white;
+        border: 1px solid #dcdcdc;
+        border-radius: 4px;
+        padding: 10px;
+        font-weight: bold;
+        color: #757575;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
 
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
+    .google-login-button:hover {
+        background-color: #f7f7f7;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
-
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    Forgot your password?
-                </Link>
-
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </PrimaryButton>
-            </div>
-        </form>
-    </GuestLayout>
-</template>
+    .google-logo {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+</style>
