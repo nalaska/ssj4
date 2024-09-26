@@ -33,14 +33,12 @@ class HandleInertiaRequests extends Middleware
     {
         $user = $request->user();
         $roles = $user ? Cache::get('user_roles_' . $user->id, []) : [];
-        $token = $user ? Cache::get('auth_token_' . $user->id) : null; 
 
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
-                'roles' => $roles,
-                'token' => $token
+                'roles' => $roles
             ],
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
