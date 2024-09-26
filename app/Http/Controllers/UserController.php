@@ -52,7 +52,7 @@ class UserController extends Controller
         return Inertia::render('Users/Edit', ['user' => $user, 'roles' => $roles]);
     }
 
-    public function update(Request $request, User $user, int $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $user = User::find($id);
 
@@ -105,4 +105,5 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', "Feuille de présence modifiée pour $userName");
     }
+    
 }

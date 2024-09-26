@@ -9,3 +9,10 @@ export function calculateAge(dateOfBirth: string): number {
     return age;
 }
 
+export function formatBelt(belt: string): string {
+    if (!belt) {
+        return 'Inconnu'; 
+    }
+    return belt.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+}
+
