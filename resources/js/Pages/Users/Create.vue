@@ -71,16 +71,6 @@
               <InputError :message="form.errors.year_of_registration" class="mt-2" />
             </div>
             <div class="mb-4">
-              <label for="status" class="block text-gray-700 text-sm font-bold mb-2">Status</label>
-              <input
-                type="text"
-                v-model="form.status"
-                id="status"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
-              <InputError :message="form.errors.status" class="mt-2" />
-            </div>
-            <div class="mb-4">
               <label for="picture" class="block text-gray-700 text-sm font-bold mb-2">Photo</label>
               <input
                 type="file"
@@ -123,9 +113,6 @@
   import { belts, roles } from '@/utils/utils';
   import { formatBelt } from '@/utils/usersFunctions';
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-  import { useStore } from 'vuex';
-
-  const store = useStore();
 
   defineProps({
       roles: Array
@@ -139,7 +126,6 @@
     year_of_registration: '',
     date_of_birth: '',
     picture: '',
-    status: '',
     roles: []
   });
 
@@ -147,7 +133,6 @@
     form.post('/users', {
       headers: {
           'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-          'Authorization': `Bearer ${store.getters.getToken}`,
       }
     });
   }

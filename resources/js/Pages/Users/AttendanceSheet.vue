@@ -7,6 +7,7 @@
             :initialAttendance="attendance" 
             :userId="userId" 
             :userPicture="userPicture" 
+            :userBelt="userBelt" 
         />
     </div>
     </AuthenticatedLayout>
@@ -24,4 +25,5 @@
     const attendance = ref(JSON.parse(props.user.attendance || '{}'));
     const userId = ref(props.user.id || null);
     const userPicture = ref(props.user.picture || 'null');
+    const userBelt = ref(props.user.belt || 'null');
 </script>

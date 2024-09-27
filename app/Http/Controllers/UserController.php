@@ -34,7 +34,6 @@ class UserController extends Controller
             'belt' => 'required|in:' . implode(',', Belt::getValues()),
             'phone' => 'required|string|regex:/^0[1-9][0-9]{8}$/',
             'year_of_registration' => 'required|integer|digits:4|lte:' . date('Y'),
-            'status' => 'required|string|max:255',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,name',
             'picture' => 'nullable|image|max:2048',

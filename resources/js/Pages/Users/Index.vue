@@ -25,10 +25,12 @@
           :key="user.id"
           :class="['shadow-lg rounded-lg p-6 relative', getBeltClass(user.belt)]"
         >
+          <img v-if="user.picture" :src="`/storage/${user.picture}`" alt="User Picture" class="h-16 rounded-full mb-4">
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold mb-2">{{ user.name }}</h2>
             <UserMenu 
               :userId="user.id" 
+              :userName="user.name"
               :isAdmin="isAdmin" 
               :isAdminOrProfessor="isAdminOrProfessor" 
               :handleDeleteUser="() => handleDeleteUser(user.id)" 
@@ -39,7 +41,11 @@
       </div>
     </div>
     <div class="mt-6 mb-10">
-      <Pagination :links="paginationLinks" @page-changed="changePage" />
+      <Pagination 
+        :links="paginationLinks" 
+        @page-changed="changePage" 
+        v-if="totalPages > 1"
+      />
     </div>
   </AuthenticatedLayout>
 </template>
@@ -105,9 +111,6 @@
       violette: { bg: 'bg-purple-400', text: 'text-white' },
       marron: { bg: 'bg-brown-400', text: 'text-white' },
       noire: { bg: 'bg-black', text: 'text-white' },
-      rouge_noire: { bg: 'bg-black', text: 'text-white' },
-      rouge_blanche: { bg: 'bg-black', text: 'text-white' },
-      rouge: { bg: 'bg-red-600', text: 'text-white' },
       default: { bg: 'bg-gray-200', text: 'text-black' },
   };
 
@@ -116,26 +119,22 @@
       return `${style.bg} ${style.text}`;
   };
 
-  async function handleDeleteUser(userId) {
+  async function handleDeleteUser(userId) 
+  {
       await deleteUser(userId, csrfToken);
-      localUsers.value = localUsers.value.filter(user => user.id !== userId);
   }
 
   async function deleteUser(userId, csrfToken)
   {
-    if (!confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
-        return;
-    }
-
     try {
       await fetch(`/users/${userId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRF-TOKEN': csrfToken,
-          'Authorization': `Bearer ${store.getters.getToken}`
         }
       });
+      localUsers.value = localUsers.value.filter(user => user.id !== userId);
     } catch (error) {
           console.error('Erreur lors de la suppression de l\'utilisateur', error);
     }

@@ -39,7 +39,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::middleware([CheckAdminOrProfessorRole::class])->group(function () {
-        Route::get('/users/{user}/attendance/{year?}', [UserController::class, 'attendance'])->name('users.attendance');
+        Route::get('/users/{user}/attendance', [UserController::class, 'attendance'])->name('users.attendance');
         Route::post('/users/{user}/attendance', [UserController::class, 'updateAttendance'])->name('users.updateAttendance');
     });
 });
