@@ -18,7 +18,7 @@ class UserService
             'belt' => $request->belt,
             'phone' => $request->phone,
             'year_of_registration' => $request->year_of_registration,
-            'status' => $request->status,
+            'status' => 'actif',
             'picture' => $request->file('picture') ? $request->file('picture')->store('pictures', 'public') : null,
             'date_of_birth' => $request->date_of_birth,
             'attendance' => $request->attendance

@@ -17,9 +17,6 @@
 
 <script setup>
 
-    import { useStore } from 'vuex';
-
-    const store = useStore();
 
     const logout = async () => {
         const response = await fetch(route('logout.google'), {
@@ -27,12 +24,10 @@
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${store.getters.getToken}`
             },
         });
 
         if (response.ok) {
-            store.dispatch('removeToken');
             window.location.href = '/'; 
         } else {
             console.error('Erreur lors de la déconnexion');
