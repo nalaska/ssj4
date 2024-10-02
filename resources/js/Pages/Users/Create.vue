@@ -1,5 +1,6 @@
 <template>
     <AuthenticatedLayout>
+      <Breadcrumb :items="breadcrumbItems" />
       <div class="flex justify-center items-center min-h-screen bg-gray-100">
         <div class="w-full max-w-md p-4">
           <h1 class="text-2xl font-bold mb-4 text-center">Créer un nouvel adhérent</h1>
@@ -109,10 +110,11 @@
 <script setup>
   import { useForm } from '@inertiajs/vue3';
   import InputError from '@/Components/InputError.vue';
-  import { defineProps } from 'vue';
+  import { defineProps, ref } from 'vue';
   import { belts, roles } from '@/utils/utils';
   import { formatBelt } from '@/utils/usersFunctions';
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+  import Breadcrumb from '@/Components/Breadcrumb.vue';
 
   defineProps({
       roles: Array
@@ -128,6 +130,11 @@
     picture: '',
     roles: []
   });
+
+  const breadcrumbItems = ref([
+    { text: 'Utilisateurs', href: '/users' },
+    { text: 'Ajouter' }
+  ]);
 
   function submit() {
     form.post('/users', {

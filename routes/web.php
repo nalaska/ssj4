@@ -36,6 +36,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::get('users/{user}/edit-picture', [UserController::class, 'editPicture'])->name('users.editPicture');
+        Route::post('users/{user}/update-picture', [UserController::class, 'updatePicture'])->name('users.updatePicture');
     });
 
     Route::middleware([CheckAdminOrProfessorRole::class])->group(function () {

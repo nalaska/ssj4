@@ -1,5 +1,11 @@
 <template>
     <AuthenticatedLayout>
+        <FlashMessage 
+            v-if="flashMessageError || flashMessageSuccess" 
+            :flashMessage="flashMessageError || flashMessageSuccess" 
+            :color="flashMessageError ? 'red' : 'green'" 
+        />
+        <Breadcrumb :items="breadcrumbItems" />
         <div class="flex justify-center items-center min-h-screen bg-gray-100">
             <div class="w-full max-w-md p-4">
                 <h1 class="text-2xl font-bold mb-4 text-center">Modifier l'adhérent</h1>
@@ -97,20 +103,7 @@
                         >
                         <InputError :message="form.errors.status" class="mt-2" />
                     </div>
-                    <div class="mb-4">
-                        <label for="picture" class="block text-gray-700 text-sm font-bold mb-2">Photo</label>
-                        <input 
-                            type="file"
-                            @change="handleFileChange"
-                            id="picture" 
-                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        />
-                        <InputError :message="form.errors.picture" class="mt-2" />
-                        
-                        <div v-if="form.picture">
-                            <img :src="`/storage/${form.picture}`" alt="Current Picture" class="mt-2 w-32 h-32 object-cover" />
-                        </div>
-                    </div>
+                    
                     <div class="mb-4">
                         <label for="date_of_birth" class="block text-gray-700 text-sm font-bold mb-2">Date de naissance</label>
                         <input 
@@ -123,6 +116,7 @@
                     </div>
                     <div class="flex items-center justify-between">
                         <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Mettre à jour</button>
+                        <Link :href="`/users/${form.id}/edit-picture`" class="text-blue-500 hover:underline">Modifier la photo</Link>
                     </div>
                 </form>
             </div>
@@ -131,18 +125,25 @@
 </template>
 
 <script setup>
-    import { useForm } from '@inertiajs/vue3';
+    import { useForm, Link, usePage } from '@inertiajs/vue3';
     import InputError from '@/Components/InputError.vue';
-    import { defineProps } from 'vue';
+    import { defineProps, ref, computed } from 'vue';
     import { belts, roles } from '@/utils/utils';
     import { formatBelt } from '@/utils/usersFunctions';
     import { watch } from 'vue';
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+    import Breadcrumb from '@/Components/Breadcrumb.vue';
+import FlashMessage from '@/Components/FlashMessage.vue';
 
     const props = defineProps({
         user: Object,
         roles: Array
     });
+
+    const breadcrumbItems = ref([
+        { text: 'Utilisateurs', href: '/users' },
+        { text: 'Modifier' }
+    ]);
 
     const form = useForm({
         id: props.user?.id || '',
@@ -152,11 +153,13 @@
         phone: props.user?.phone || '',
         year_of_registration: props.user?.year_of_registration || '',
         date_of_birth: props.user?.date_of_birth || '',
-        picture: props.user?.picture || '',
         status: props.user?.status || '',
         roles: props.roles || [],
         attendance: props.user?.attendance || {}
     });
+
+    const flashMessageError = computed(() => usePage().props.flash.error);
+    const flashMessageSuccess = computed(() => usePage().props.flash.success);
 
     watch(() => form.roles, (newRoles) => {
         form.roles = newRoles;

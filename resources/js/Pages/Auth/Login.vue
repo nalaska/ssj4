@@ -1,9 +1,9 @@
 <template>
     <div class="flex justify-center items-center min-h-screen bg-gray-100">
         <flashMessage 
-            v-if="flashMessageError || flashMessageSuccess" 
-            :flashMessage="flashMessageError || flashMessageSuccess" 
-            :color="flashMessageError ? 'red' : 'green'" 
+            v-if="flashMessageError" 
+            :flashMessage="flashMessageError" 
+            :color="'red'" 
         />
         <div class="w-full max-w-md p-4">
             <div class="bg-white shadow-md rounded-lg p-6">
@@ -25,8 +25,8 @@
     import flashMessage from '@/Components/FlashMessage.vue';
 
     const flashMessageError = computed(() => usePage().props.flash.error);
-    const flashMessageSuccess = computed(() => usePage().props.flash.success);
 
+    console.log(flashMessageError.value);
     const redirectToGoogle = () => {
         window.location.href = '/auth/google';
     }

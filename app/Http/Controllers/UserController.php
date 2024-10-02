@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -59,7 +60,6 @@ class UserController extends Controller
             return redirect()->route('users.index')->with('error', 'Utilisateur non trouvé.');
         }
 
-        //TODO: régler pb image JPG et l'update image qui casse tout
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255',
@@ -69,7 +69,6 @@ class UserController extends Controller
             'status' => 'required|string|max:255',
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,name',
-            'picture' => 'nullable|max:2048', 
             'date_of_birth' => 'required|date',
         ]);
     
@@ -105,4 +104,23 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', "Feuille de présence modifiée pour $userName");
     }
     
+    public function editPicture(User $user): Response
+    {
+        return Inertia::render('Users/EditPicture', ['user' => $user]);
+    }
+
+    public function updatePicture(Request $request, User $user): RedirectResponse
+    {
+        $request->validate([
+            'picture' => 'required|image|max:2048',
+        ]);
+
+        if ($request->file('picture')) {
+            $user->picture ? Storage::disk('public')->delete($user->picture) : null;
+            $user->picture = $request->file('picture')->store('pictures', 'public');
+            $user->save();
+        }
+
+        return redirect()->route('users.edit', $user)->with('success', 'Photo mise à jour avec succès.');
+    }
 }
