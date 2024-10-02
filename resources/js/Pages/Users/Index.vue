@@ -3,7 +3,7 @@
     <div class="container mx-auto p-4">
       <h1 class="text-3xl font-bold mb-6 text-center">Adhérents</h1>
 
-      <flashMessage 
+      <FlashMessage 
         v-if="flashMessageError || flashMessageSuccess" 
         :flashMessage="flashMessageError || flashMessageSuccess" 
         :color="flashMessageError ? 'red' : 'green'" 
@@ -25,10 +25,16 @@
           :key="user.id"
           :class="['shadow-lg rounded-lg p-6 relative', getBeltClass(user.belt)]"
         >
+          <img 
+            v-if="user.picture" 
+            :src="`/storage/${user.picture}`" 
+            class="h-16 rounded-full mb-4 user-picture"
+          >
           <div class="flex justify-between items-center">
             <h2 class="text-xl font-semibold mb-2">{{ user.name }}</h2>
             <UserMenu 
               :userId="user.id" 
+              :userName="user.name"
               :isAdmin="isAdmin" 
               :isAdminOrProfessor="isAdminOrProfessor" 
               :handleDeleteUser="() => handleDeleteUser(user.id)" 
@@ -39,7 +45,11 @@
       </div>
     </div>
     <div class="mt-6 mb-10">
-      <Pagination :links="paginationLinks" @page-changed="changePage" />
+      <Pagination 
+        :links="paginationLinks" 
+        @page-changed="changePage" 
+        v-if="totalPages > 1"
+      />
     </div>
   </AuthenticatedLayout>
 </template>
@@ -49,10 +59,10 @@
   import { Link, usePage } from '@inertiajs/vue3';
   import { defineProps } from 'vue';
   import Pagination from '@/Components/Pagination.vue';
-  import flashMessage from '@/Components/FlashMessage.vue';
   import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import UserInfo from '@/Components/UserInfos.vue';
   import UserMenu from '@/Components/UserMenu.vue';
+  import FlashMessage from '@/Components/FlashMessage.vue';
 
   const props = defineProps({
       users: {
@@ -105,9 +115,6 @@
       violette: { bg: 'bg-purple-400', text: 'text-white' },
       marron: { bg: 'bg-brown-400', text: 'text-white' },
       noire: { bg: 'bg-black', text: 'text-white' },
-      rouge_noire: { bg: 'bg-black', text: 'text-white' },
-      rouge_blanche: { bg: 'bg-black', text: 'text-white' },
-      rouge: { bg: 'bg-red-600', text: 'text-white' },
       default: { bg: 'bg-gray-200', text: 'text-black' },
   };
 
@@ -116,28 +123,35 @@
       return `${style.bg} ${style.text}`;
   };
 
-  async function handleDeleteUser(userId) {
+  async function handleDeleteUser(userId) 
+  {
       await deleteUser(userId, csrfToken);
-      localUsers.value = localUsers.value.filter(user => user.id !== userId);
   }
 
   async function deleteUser(userId, csrfToken)
   {
-    if (!confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
-        return;
-    }
-
     try {
       await fetch(`/users/${userId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRF-TOKEN': csrfToken,
-          'Authorization': `Bearer ${store.getters.getToken}`
         }
       });
+      localUsers.value = localUsers.value.filter(user => user.id !== userId);
     } catch (error) {
           console.error('Erreur lors de la suppression de l\'utilisateur', error);
     }
   }
 </script>
+
+<style scoped>
+  .user-picture {
+    object-fit: cover;
+    transition: transform 0.3s ease; 
+  }
+
+  .user-picture:hover {
+    transform: scale(1.5); 
+  }
+</style>

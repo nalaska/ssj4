@@ -1,9 +1,8 @@
 <template>
-    <form 
-        @submit.prevent="submitAttendance"
-    >
+    <form @submit.prevent="submitAttendance">
         <div class="attendance-card">
             <div class="header">
+                <img class="belt-image" :src="`/storage/pictures/jjb_${props.userBelt}.png`" alt="User Picture" />
                 <h2>CARTON DE PRESENCE</h2>
                 <div class="name-field">
                     <label for="name">NOM / PRENOM :</label>
@@ -17,22 +16,13 @@
                 <thead>
                     <tr>
                         <th>MOIS / DATES</th>
-                        <th 
-                            v-for="day in 31" 
-                            :key="day"
-                        >{{ day }}</th>
+                        <th v-for="day in 31" :key="day">{{ day }}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr 
-                        v-for="month in months" 
-                        :key="month"
-                    >
+                    <tr v-for="month in months" :key="month">
                         <td>{{ month }}</td>
-                        <td 
-                            v-for="day in 31" 
-                            :key="day"
-                        >
+                        <td v-for="day in 31" :key="day">
                             <input type="checkbox" v-if="attendance[month]" v-model="attendance[month][day]" />
                         </td>
                     </tr>
@@ -41,13 +31,44 @@
             <div class="actions">
                 <button type="submit" class="btn-submit">Valider</button>
             </div>
+            <button type="button" @click="showResetModal = true" class="text-2xl p-4 float-right">
+                <font-awesome-icon icon="fa-solid fa-recycle" />
+            </button>
         </div>
     </form>
+
+    <Modal 
+        :show="showResetModal" 
+        @close="showResetModal = false"
+    >
+        <template #default>
+            <div class="p-4">
+                <h2 class="text-lg font-bold">Confirmer la réinitialisation</h2>
+                <p>Êtes-vous sûr de vouloir réinitialiser le carnet de présence ?</p>
+                <p>Toute les données seront perdues.</p>
+                <div class="mt-4 flex justify-end">
+                    <button 
+                        @click="showResetModal = false" 
+                        class="mr-2 px-4 py-2 bg-gray-300 rounded"
+                    >
+                    Annuler
+                    </button>
+                    <button 
+                        @click="clearAttendance" 
+                        class="px-4 py-2 bg-red-600 text-white rounded"
+                    >
+                        Réinitialiser
+                    </button>
+                </div>
+            </div>
+        </template>
+    </Modal>
 </template>
 
 <script setup>
     import { ref, watch } from 'vue';
     import { useForm } from '@inertiajs/vue3';
+    import Modal from './Modal.vue';
 
     const props = defineProps({
         userName: String,
@@ -56,13 +77,16 @@
             required: true
         },
         userId: Number,
-        userPicture: String
+        userPicture: String,
+        userBelt: String
     });
 
     const months = [
-        'SEPTEMBRE', 'OCTOBRE', 'NOVEMBRE', 'DECEMBRE', 'JANVIER', 
-        'FEVRIER', 'MARS', 'AVRIL', 'MAI', 'JUIN', 'JUILLET', 'AOUT'
+        'JANVIER', 'FEVRIER', 'MARS', 'AVRIL', 'MAI', 'JUIN', 
+        'JUILLET', 'AOUT','SEPTEMBRE', 'OCTOBRE', 'NOVEMBRE', 'DECEMBRE',
     ];
+
+    const showResetModal = ref(false);
 
     function initializeAttendance(initialAttendance) {
         const attendanceObj = {};
@@ -84,6 +108,15 @@
     function submitAttendance() {
         form.attendance = JSON.stringify(attendance.value);
         form.post(`/users/${props.userId}/attendance`);
+    }
+
+    function clearAttendance() {
+        months.forEach(month => {
+            for (let day = 1; day <= 31; day++) {
+                attendance.value[month][day] = false; 
+            }
+        });
+        showResetModal.value = false; 
     }
 
     watch(attendance, (newVal) => {
@@ -110,6 +143,22 @@
     position: relative;
 }
 
+.belt-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 16px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: transform 0.3s ease; 
+}
+
+.belt-image:hover {
+    transform: scale(1.5); 
+}
+
 .name-field {
     display: flex;
     flex-direction: column;
@@ -134,11 +183,17 @@
     top: 0;
     right: 0;
     margin: 16px;
+    object-fit: cover;
+    transition: transform 0.3s ease; 
+}
+
+.user-picture:hover {
+    transform: scale(1.5); 
 }
 
 .user-picture img {
-    width: 50px;
-    height: 50px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -212,6 +267,16 @@
 
     .attendance-table td {
         font-size: 8px;
+    }
+
+    .user-picture img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .belt-image {
+        width: 50px;
+        height: 50px;
     }
 }
 </style>

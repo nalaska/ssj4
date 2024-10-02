@@ -18,7 +18,7 @@ class UserService
             'belt' => $request->belt,
             'phone' => $request->phone,
             'year_of_registration' => $request->year_of_registration,
-            'status' => $request->status,
+            'status' => 'actif',
             'picture' => $request->file('picture') ? $request->file('picture')->store('pictures', 'public') : null,
             'date_of_birth' => $request->date_of_birth,
             'attendance' => $request->attendance
@@ -32,12 +32,6 @@ class UserService
     public function updateUser(Request $request, User $user): User
     {
         $user->update($request->only(['name', 'email', 'belt', 'phone', 'year_of_registration', 'status', 'date_of_birth', 'attendance']));
-
-        if ($request->file('picture')) {
-            $user->picture ? Storage::disk('public')->delete($user->picture) : null;
-            $user->picture = $request->file('picture')->store('pictures', 'public');
-        }
-
         $this->syncRoles($user, $request->roles);
 
         return $user;

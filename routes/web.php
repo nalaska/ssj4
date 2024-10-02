@@ -36,10 +36,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::get('users/{user}/edit-picture', [UserController::class, 'editPicture'])->name('users.editPicture');
+        Route::post('users/{user}/update-picture', [UserController::class, 'updatePicture'])->name('users.updatePicture');
     });
 
     Route::middleware([CheckAdminOrProfessorRole::class])->group(function () {
-        Route::get('/users/{user}/attendance/{year?}', [UserController::class, 'attendance'])->name('users.attendance');
+        Route::get('/users/{user}/attendance', [UserController::class, 'attendance'])->name('users.attendance');
         Route::post('/users/{user}/attendance', [UserController::class, 'updateAttendance'])->name('users.updateAttendance');
     });
 });

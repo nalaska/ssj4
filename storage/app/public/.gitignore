@@ -1,2 +1,4 @@
 *
 !.gitignore
+storage/app/public/pictures/*
+!storage/app/public/pictures/jjb_*
