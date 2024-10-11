@@ -22,11 +22,11 @@ class GoogleController extends Controller
             $googleUser = Socialite::driver('google')->user();
         } catch (Exception $e) {
             $message = $e->getMessage();
+            dd($e->getMessage());
             return redirect()->route('login')->with('error', "Erreur lors de l'authentification Google: $message");
         }
 
         $user = User::where('email', $googleUser->getEmail())->first();
-
         if ($user) {
             Auth::login($user);
             $roles = $user->roles()->pluck('name')->toArray();
@@ -43,6 +43,7 @@ class GoogleController extends Controller
         if ($user) {
             cache()->flush();
         }   
+
 
         Auth::guard('web')->logout();
 
