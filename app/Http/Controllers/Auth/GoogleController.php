@@ -22,7 +22,6 @@ class GoogleController extends Controller
             $googleUser = Socialite::driver('google')->user();
         } catch (Exception $e) {
             $message = $e->getMessage();
-            dd($e->getMessage());
             return redirect()->route('login')->with('error', "Erreur lors de l'authentification Google: $message");
         }
 
