@@ -2,7 +2,7 @@ name: ci
 
 on:
   pull_request:
-    types: [ opened, synchronize ]
+    types: [opened, synchronize]
 
 jobs:
   tests:
@@ -32,4 +32,4 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: Run tests
-        run: XDEBUG_MODE=coverage php vendor/bin/pest
+      run: XDEBUG_MODE=coverage php vendor/bin/pest
