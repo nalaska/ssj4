@@ -26,7 +26,6 @@ class GoogleController extends Controller
         }
 
         $user = User::where('email', $googleUser->getEmail())->first();
-
         if ($user) {
             Auth::login($user);
             $roles = $user->roles()->pluck('name')->toArray();
@@ -43,6 +42,7 @@ class GoogleController extends Controller
         if ($user) {
             cache()->flush();
         }   
+
 
         Auth::guard('web')->logout();
 
